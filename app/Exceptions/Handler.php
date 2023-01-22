@@ -45,6 +45,23 @@ class Handler extends ExceptionHandler
     {
         $this->reportable(function (Throwable $e) {
             //
+            return false;
         });
+    }
+
+    /**
+     * @param Request $request
+     * @param Throwable $e
+     * @return JsonResponse|Response|\Symfony\Component\HttpFoundation\Response
+     * @throws Throwable
+     */
+    public function render($request, Throwable $e)
+    {
+        if ($request->is('api/*')) {
+            return response()->json([
+                'message' => 'Something Went Wrong.'
+            ], 404);
+        }
+        return parent::render($request, $e);
     }
 }

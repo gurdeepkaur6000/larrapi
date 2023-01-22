@@ -32,20 +32,27 @@
             */
             public function store(Request $request)
             {
-                $input = $request->all();
- 
-                $validator = Validator::make($input, [
-                    'name' => 'required',
-                    'detail' => 'required'
-                ]);
- 
-                if($validator->fails()){
-                    return $this->sendError('Validation Error.', $validator->errors());       
+                try
+                {
+                    $input = $request->all();
+     
+                    $validator = Validator::make($input, [
+                        'name' => 'required',
+                        'detail' => 'required'
+                    ]);
+     
+                    if($validator->fails()){
+                        return $this->sendError('Validation Error.', $validator->errors());       
+                    }
+     
+                    $product = Product::create($input);
+     
+                    return $this->sendResponse(new ProductResource($product), 'Product created successfully.');
                 }
- 
-                $product = Product::create($input);
- 
-                return $this->sendResponse(new ProductResource($product), 'Product created successfully.');
+                catch(Exception $e)
+                {
+                    return $e->getMessage();
+                }
             } 
  
             /**
